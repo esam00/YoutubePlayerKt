@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">YoutubePlayer</string>
+    <string name="thumbnail">Thumbnail</string>
+    <string name="likes">\ Likes .</string>
+    <string name="views">\ Views .</string>
+    <string name="dislikes">\ Dislikes</string>
+    <string name="network_request_failed">something went wrong, please try again</string>
+    <string name="logo">logo</string>
+    <string name="no_internet">No Internet connection!</string>
+    <string name="retry">Retry</string>
+    <string name="videos_updated">Trending videos updated</string>
+</resources>
