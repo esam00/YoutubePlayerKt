@@ -5,7 +5,7 @@ A simple Android App for youtube streaming based on Youtube Data API
 1. Displaying a list of trending videos based on a specific region .
 2. When clicking on a video it opens and plays in another screen .
 3. Displaying Video Statistics {ViewCount, LikesCount, DislikesCount}.
-4. Using Retrofit with MVVM Architecture pattern
+4. Using Retrofit with MVP Architecture pattern
 
 ## screenShots 
 <img src="screenshots/splash.png" width=300> <img src="screenshots/trending.png" width=300>
