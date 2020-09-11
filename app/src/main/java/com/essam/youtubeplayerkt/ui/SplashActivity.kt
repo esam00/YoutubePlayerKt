@@ -9,9 +9,10 @@ import com.essam.youtubeplayerkt.ui.home.HomeActivity
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // just give it one second to display a splash screen
         Thread.sleep(1000)
 
         startActivity(Intent(this,HomeActivity::class.java))
+        finish()
     }
 }
