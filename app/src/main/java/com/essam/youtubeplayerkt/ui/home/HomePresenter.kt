@@ -8,16 +8,25 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomePresenter(val homeListeners: HomeListeners) {
+class HomePresenter: HomePresenterInterface {
     private val TAG = "HomePresenter"
 
+    var view: HomeView? = null
     /**
      * This method simply creates a Retrofit instance and make a network call to Youtube Data Api
      * and returns a list of videos that match the API request parameters.
      * For more details checkout the documentation : https://developers.google.com/youtube/v3/docs/videos/list
      */
 
-     fun getTrendingMovies() {
+    override fun attachView(view: HomeView) {
+        this.view = view
+    }
+
+    override fun detachView() {
+        view = null
+    }
+
+     override fun getTrendingMovies() {
         Log.i(TAG, "Api request >>>>>>> getVideos")
 
         val call = ApiClient.getTrendingVideos(
@@ -32,13 +41,15 @@ class HomePresenter(val homeListeners: HomeListeners) {
             override fun onResponse(call: Call<VideoListResponse>, response: Response<VideoListResponse>) {
                 Log.i(TAG, "Get videos Response : $response ")
                 if (response.isSuccessful)
-                    homeListeners.onTrendingMoviesLoaded(response.body())
+                    view?.onTrendingMoviesLoaded(response.body()?.items ?: arrayListOf())
+                else
+                    view?.onError(response.errorBody().toString())
             }
 
             override fun onFailure(call: Call<VideoListResponse>, t: Throwable) {
                 Log.e(TAG, "error loading videos : $t")
 
-                homeListeners.onTrendingMoviesLoaded(null)
+                view?.onError(t.localizedMessage)
             }
         })
     }

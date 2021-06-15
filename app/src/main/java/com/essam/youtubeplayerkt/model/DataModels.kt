@@ -3,9 +3,9 @@ package com.essam.youtubeplayerkt.model
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class StandardThumbnail(val url: String): Serializable
+data class StandardThumbnail(val url: String?): Serializable
 
-data class Thumbnail(val standard: StandardThumbnail): Serializable
+data class Thumbnail(val standard: StandardThumbnail?): Serializable
 
 data class Video(val title: String, val description: String, val publishedAt: String, val thumbnails: Thumbnail): Serializable
 

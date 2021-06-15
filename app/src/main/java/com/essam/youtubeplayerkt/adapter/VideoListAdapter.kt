@@ -51,10 +51,16 @@ class VideoListAdapter(private val mContext: Context, private val onItemClickLis
 
         fun bind(item: Item, mContext: Context) {
             mTitleTv.text = item.video.title
-            mViewsCountTv.text = representStatistic(item.statistics.viewCount.toInt())
-            mLikeCount.text = representStatistic(item.statistics.likeCount.toInt())
-            mDislikeCountTv.text = representStatistic(item.statistics.dislikeCount.toInt())
-            Glide.with(mContext).load(item.video.thumbnails.standard.url).into(mImageThumb)
+
+            with(item.statistics){
+                mViewsCountTv.text = representStatistic(viewCount.toInt())
+                mLikeCount.text = representStatistic(likeCount.toInt())
+                mDislikeCountTv.text = representStatistic(dislikeCount.toInt())
+            }
+
+            item.video.thumbnails.standard?.url?.let {
+                Glide.with(mContext).load(it).into(mImageThumb)
+            }
         }
 
         override fun onClick(v: View?) {

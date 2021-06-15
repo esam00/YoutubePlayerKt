@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.essam.youtubeplayerkt.R
 import com.essam.youtubeplayerkt.adapter.VideoListAdapter
 import com.essam.youtubeplayerkt.model.Item
-import com.essam.youtubeplayerkt.model.VideoListResponse
 import com.essam.youtubeplayerkt.ui.player.VideoPlayerActivity
 import com.essam.youtubeplayerkt.utils.VIDEO_ITEM
 import com.essam.youtubeplayerkt.utils.isNetworkConnected
@@ -17,16 +16,16 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(),
-    HomeListeners, VideoListAdapter.OnItemClickListener {
+    HomeView, VideoListAdapter.OnItemClickListener {
 
     private var mVideoItemsList = ArrayList<Item>()
     private val mVideoListAdapter = VideoListAdapter(this,this)
-    private val presenter = HomePresenter(this)
+    private val presenter: HomePresenterInterface = HomePresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
+        presenter.attachView(this)
         initSwipeRefresh()
         initRecyclerView()
         getTrendingVideos()
@@ -60,28 +59,33 @@ class HomeActivity : AppCompatActivity(),
         }
     }
 
-    private fun updateUi(response: VideoListResponse?){
+    private fun updateUi(items: List<Item>){
         swipeRefresh.isRefreshing = false
-        if (response != null){
-            mVideoItemsList = response.items as ArrayList<Item>
-            mVideoListAdapter.setItems(mVideoItemsList)
-            mVideoListAdapter.notifyDataSetChanged()
-            logo_iv.visibility = View.INVISIBLE
-            Toast.makeText(this, R.string.videos_updated, Toast.LENGTH_SHORT).show()
-        }else{
-            logo_iv.visibility = View.VISIBLE
-            Toast.makeText(this, R.string.network_request_failed, Toast.LENGTH_SHORT).show()
-        }
+        mVideoItemsList = items as ArrayList<Item>
+        mVideoListAdapter.setItems(mVideoItemsList)
+        mVideoListAdapter.notifyDataSetChanged()
+        logo_iv.visibility = View.INVISIBLE
+        Toast.makeText(this, R.string.videos_updated, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onTrendingMoviesLoaded(videoListResponse: VideoListResponse?) {
-        updateUi(videoListResponse)
+    override fun onTrendingMoviesLoaded(items: List<Item>) {
+        updateUi(items)
     }
+
+    override fun onError(message: String) {
+            logo_iv.visibility = View.VISIBLE
+            Toast.makeText(this, R.string.network_request_failed, Toast.LENGTH_SHORT).show()
+            }
 
     override fun onItemClicked(position: Int) {
         val item = mVideoItemsList[position]
         val intent = Intent(this, VideoPlayerActivity::class.java)
         intent.putExtra(VIDEO_ITEM,item)
         startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 }
